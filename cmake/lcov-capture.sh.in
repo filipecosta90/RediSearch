@@ -1,9 +1,11 @@
 #!/bin/sh
 
-INFO_FILE=$1
-if [ -z "${INFO_FILE}" ]; then
-    INFO_FILE='coverage.info'
+INFO_FILE=coverage.info
+OUTPUT_DIR=$1
+if [ -z "${OUTPUT_DIR}" ]; then
+    OUTPUT_DIR='coverage'
 fi
+
 LCOV=lcov
 ${LCOV} -c -d @PROJECT_SOURCE_DIR@ -o ${INFO_FILE}
 ${LCOV} -r ${INFO_FILE} -o ${INFO_FILE} \
@@ -14,4 +16,4 @@ ${LCOV} -r ${INFO_FILE} -o ${INFO_FILE} \
     '@PROJECT_SOURCE_DIR@/src/tests/*' \
     '*/sds.c' '*/sds.h'
 
-genhtml -o coverage ${INFO_FILE}
+genhtml -o "${OUTPUT_DIR}" "${INFO_FILE}"

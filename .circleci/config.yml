@@ -22,6 +22,9 @@ defaults:
         paths:
           - 'snapshot'
           - 'release'
+    - store_artifacts:
+        path: ../coverage
+        destination: coverage
 
   default_jobs: &default_jobs
     - centos
@@ -33,6 +36,8 @@ jobs:
     docker:
       - image: 'redislabsmodules/rmbuilder:latest'
     environment:
+      - USE_COVERAGE: 1
+      - COVERAGE_DIR: build-debian/coverage
       - BUILD_DIR: build-debian
 
     steps: *ci_steps

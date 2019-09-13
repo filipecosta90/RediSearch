@@ -10,6 +10,11 @@ fi
 PROJECT_DIR=$PWD
 mkdir $BUILD_DIR
 cd $BUILD_DIR
+
+if [ "$USE_COVERAGE" ]; then
+    extra_args="-DUSE_COVERAGE"
+fi
+
 cmake $PROJECT_DIR \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DRS_RUN_TESTS=1 \
