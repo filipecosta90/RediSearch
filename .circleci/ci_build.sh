@@ -12,7 +12,7 @@ mkdir $BUILD_DIR
 cd $BUILD_DIR
 
 if [ "$USE_COVERAGE" ]; then
-    extra_args="-DUSE_COVERAGE"
+    extra_args="-DUSE_COVERAGE=ON"
 fi
 
 cmake $PROJECT_DIR \
