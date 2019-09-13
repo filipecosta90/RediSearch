@@ -18,6 +18,6 @@ fi
 cmake $PROJECT_DIR \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DRS_RUN_TESTS=1 \
-    -RS_VERBOSE_TESTS=1 \
+    -RS_VERBOSE_TESTS=1 ${extra_args} \
     ../
 make -j$CI_CONCURRENCY
