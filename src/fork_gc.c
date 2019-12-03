@@ -312,9 +312,9 @@ static void FGC_childCollectTerms(ForkGC *gc, RedisSearchCtx *sctx) {
 
 static void countDeletedCardinality(const RSIndexResult *r, void *arg) {
   CardinalityValue *valuesDeleted = arg;
-  for (int i = 0; i < array_len(valuesDeleted); ++i) {
-    if (valuesDeleted[i].value == r->num.value) {
-      valuesDeleted[i].appearances++;
+  for (int i = 0; i < array_len(valuesDeleted->values); ++i) {
+    if (valuesDeleted->values[i] == r->num.value) {
+      valuesDeleted->appearances[i]++;
       return;
     }
   }
@@ -375,19 +375,17 @@ static void FGC_childCollectNumeric(ForkGC *gc, RedisSearchCtx *sctx) {
         if (!currNode->range) {
           continue;
         }
-
-        CardinalityValue *valuesDeleted = array_new(CardinalityValue, currNode->range->card);
-        for (int i = 0; i < currNode->range->card; ++i) {
-          CardinalityValue valueDeleted;
-          valueDeleted.value = currNode->range->values[i].value;
-          valueDeleted.appearances = 0;
-          valuesDeleted = array_append(valuesDeleted, valueDeleted);
+        const u_int16_t card = currNode->range->card;
+        CardinalityValue valuesDeleted = (CardinalityValue){.values=array_new(double, card),.appearances=array_new(size_t, card)};
+        for (int i = 0; i < card; ++i) {
+          valuesDeleted.values[i] = currNode->range->values.values[i];
+          valuesDeleted.appearances[i] = 0;
         }
 
         header.curPtr = currNode;
         bool repaired =
             FGC_childRepairInvidx(gc, sctx, currNode->range->entries, sendNumericTagHeader, &header,
-                                  countDeletedCardinality, valuesDeleted);
+                                  countDeletedCardinality, &valuesDeleted);
 
         if (repaired) {
           // send reduced cardinality size
@@ -395,10 +393,11 @@ static void FGC_childCollectNumeric(ForkGC *gc, RedisSearchCtx *sctx) {
 
           // send reduced cardinality
           for (size_t i = 0; i < currNode->range->card; ++i) {
-            FGC_SEND_VAR(gc, valuesDeleted[i].appearances);
+            FGC_SEND_VAR(gc, valuesDeleted.appearances[i]);
           }
         }
-        array_free(valuesDeleted);
+        array_free(valuesDeleted.values);
+        array_free(valuesDeleted.appearances);
       }
 
       if (header.sentFieldName) {
@@ -781,23 +780,21 @@ static void applyNumIdx(ForkGC *gc, RedisSearchCtx *sctx, NumGcInfo *ninfo) {
 
   // fixing cardinality
   uint16_t newCard = 0;
-  CardinalityValue *newCardValues = array_new(CardinalityValue, currNode->range->splitCard);
-  for (int i = 0; i < array_len(currNode->range->values); ++i) {
-    int appearances = currNode->range->values[i].appearances;
+  const uint16_t currCardinality = array_len(currNode->range->values.values);
+
+  for (int i = 0; i < currCardinality; ++i) {
+    int appearances = currNode->range->values.appearances[i];
     if (i < ninfo->reduceCardinalitySize) {
       appearances -= ninfo->valuesDeleted[i];
     }
     if (appearances > 0) {
-      CardinalityValue val;
-      val.value = currNode->range->values[i].value;
-      val.appearances = appearances;
-      newCardValues = array_append(newCardValues, val);
+      currNode->range->values.values[newCard] = currNode->range->values.values[i];
+      currNode->range->values.appearances[newCard] = appearances;
       ++newCard;
     }
   }
-  array_free(currNode->range->values);
-  newCardValues = array_trimm_cap(newCardValues, newCard);
-  currNode->range->values = newCardValues;
+  array_trimm_len(currNode->range->values.values,newCard);
+  array_trimm_len(currNode->range->values.appearances,newCard);
   currNode->range->card = newCard;
 }
 

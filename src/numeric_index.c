@@ -66,30 +66,28 @@ int NumericRange_Overlaps(NumericRange *n, double min, double max) {
 
 int NumericRange_Add(NumericRange *n, t_docId docId, double value, int checkCard) {
 
-  int add = 0;
   if (checkCard) {
-    add = 1;
-    size_t card = n->card;
-    for (int i = 0; i < array_len(n->values); i++) {
-
-      if (n->values[i].value == value) {
+    int add = 1;
+    // printf("NumericRange_Add len %d, value %f, chechCard %d\n", array_len(n->values.values), value, checkCard);
+    for (int i = 0; i < array_len(n->values.values); i++) {
+      if (n->values.values[i]  == value) {
         add = 0;
-        n->values[i].appearances++;
-        break;
+        n->values.appearances[i]++;
       }
+    }
+
+    if (add) {
+      if (n->card < n->splitCard) {
+        n->values.values = array_append(n->values.values, value);
+        n->values.appearances = array_append(n->values.appearances, 1);
+        n->unique_sum += value;
+      }
+    ++n->card;
     }
   }
   if (n->minVal == NF_NEGATIVE_INFINITY || value < n->minVal) n->minVal = value;
   if (n->maxVal == NF_INFINITY || value > n->maxVal) n->maxVal = value;
-  if (add) {
-    if (n->card < n->splitCard) {
-      CardinalityValue val = {.value = value, .appearances = 1};
-      n->values = array_append(n->values, val);
-      n->unique_sum += value;
-    }
-    ++n->card;
-  }
-
+  
   InvertedIndex_WriteNumericEntry(n->entries, docId, value);
 
   return n->card;
@@ -135,8 +133,7 @@ NumericRangeNode *NewLeafNode(size_t cap, double min, double max, size_t splitCa
                              .unique_sum = 0,
                              .card = 0,
                              .splitCard = splitCard,
-                             .values = array_new(CardinalityValue, 1),
-                             //.values = rm_calloc(splitCard, sizeof(CardinalityValue)),
+                             .values = (CardinalityValue){ .values = array_new(double,1), .appearances = array_new(size_t,1), },
                              .entries = NewInvertedIndex(Index_StoreNumeric, 1)};
   return n;
 }
@@ -161,7 +158,8 @@ int NumericRangeNode_Add(NumericRangeNode *n, t_docId docId, double value) {
       // this keeps memory footprint in check
       if (++n->maxDepth > NR_MAX_DEPTH && n->range) {
         InvertedIndex_Free(n->range->entries);
-        array_free(n->range->values);
+        array_free(n->range->values.values);
+        array_free(n->range->values.appearances);
         rm_free(n->range);
         n->range = NULL;
       }
@@ -260,7 +258,8 @@ void NumericRangeNode_Free(NumericRangeNode *n) {
   if (!n) return;
   if (n->range) {
     InvertedIndex_Free(n->range->entries);
-    array_free(n->range->values);
+    array_free(n->range->values.values);
+    array_free(n->range->values.appearances);
     rm_free(n->range);
     n->range = NULL;
   }

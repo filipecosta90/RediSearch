@@ -15,6 +15,11 @@ SET(RS_COMMON_FLAGS "${RS_COMMON_FLAGS} -fPIC -Werror=implicit-function-declarat
 SET(RS_COMMON_FLAGS "${RS_COMMON_FLAGS} -pthread")
 SET(RS_COMMON_FLAGS "${RS_COMMON_FLAGS} -fno-strict-aliasing")
 
+
+IF (FOPT_INFO)
+    SET(RS_COMMON_FLAGS "${RS_COMMON_FLAGS} -ftree-vectorize -fopt-info-vec-all -fopt-info-all -optimized -fdump-ipa-inline-optimized-missed")
+ENDIF()
+
 IF (HAVE_W_INCOMPATIBLE_POINTER_TYPES)
     SET(RS_COMMON_FLAGS "${RS_COMMON_FLAGS} -Werror=incompatible-pointer-types")
     IF (HAVE_W_DISCARDS_QUALIFIERS)

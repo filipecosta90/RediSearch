@@ -19,8 +19,8 @@ extern "C" {
 #endif
 
 typedef struct {
-  double value;
-  size_t appearances;
+  double* values;
+  size_t* appearances;
 } CardinalityValue;
 
 /* A numeric range is a node in a numeric range tree, representing a range of values bunched
@@ -37,7 +37,7 @@ typedef struct {
 
   u_int16_t card;
   uint32_t splitCard;
-  CardinalityValue *values;
+  CardinalityValue values;
   InvertedIndex *entries;
 } NumericRange;
 
