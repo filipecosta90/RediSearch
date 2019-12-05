@@ -376,29 +376,29 @@ static void FGC_childCollectNumeric(ForkGC *gc, RedisSearchCtx *sctx) {
           continue;
         }
 
-        CardinalityValue *valuesDeleted = array_new(CardinalityValue, currNode->range->card);
-        for (int i = 0; i < currNode->range->card; ++i) {
-          CardinalityValue valueDeleted;
-          valueDeleted.value = currNode->range->values[i].value;
-          valueDeleted.appearances = 0;
-          valuesDeleted = array_append(valuesDeleted, valueDeleted);
-        }
+        // CardinalityValue *valuesDeleted = array_new(CardinalityValue, currNode->range->card);
+        // for (int i = 0; i < currNode->range->card; ++i) {
+        //   CardinalityValue valueDeleted;
+        //   valueDeleted.value = currNode->range->values[i].value;
+        //   valueDeleted.appearances = 0;
+        //   valuesDeleted = array_append(valuesDeleted, valueDeleted);
+        // }
 
         header.curPtr = currNode;
-        bool repaired =
-            FGC_childRepairInvidx(gc, sctx, currNode->range->entries, sendNumericTagHeader, &header,
-                                  countDeletedCardinality, valuesDeleted);
+        // bool repaired =
+        //     FGC_childRepairInvidx(gc, sctx, currNode->range->entries, sendNumericTagHeader, &header,
+        //                           countDeletedCardinality, valuesDeleted);
 
-        if (repaired) {
-          // send reduced cardinality size
-          FGC_SEND_VAR(gc, currNode->range->card);
+        // if (repaired) {
+        //   // send reduced cardinality size
+        //   FGC_SEND_VAR(gc, currNode->range->card);
 
-          // send reduced cardinality
-          for (size_t i = 0; i < currNode->range->card; ++i) {
-            FGC_SEND_VAR(gc, valuesDeleted[i].appearances);
-          }
-        }
-        array_free(valuesDeleted);
+        //   // send reduced cardinality
+        //   for (size_t i = 0; i < currNode->range->card; ++i) {
+        //     FGC_SEND_VAR(gc, valuesDeleted[i].appearances);
+        //   }
+        // }
+        // array_free(valuesDeleted);
       }
 
       if (header.sentFieldName) {
@@ -781,24 +781,24 @@ static void applyNumIdx(ForkGC *gc, RedisSearchCtx *sctx, NumGcInfo *ninfo) {
 
   // fixing cardinality
   uint16_t newCard = 0;
-  CardinalityValue *newCardValues = array_new(CardinalityValue, currNode->range->splitCard);
-  for (int i = 0; i < array_len(currNode->range->values); ++i) {
-    int appearances = currNode->range->values[i].appearances;
-    if (i < ninfo->reduceCardinalitySize) {
-      appearances -= ninfo->valuesDeleted[i];
-    }
-    if (appearances > 0) {
-      CardinalityValue val;
-      val.value = currNode->range->values[i].value;
-      val.appearances = appearances;
-      newCardValues = array_append(newCardValues, val);
-      ++newCard;
-    }
-  }
-  array_free(currNode->range->values);
-  newCardValues = array_trimm_cap(newCardValues, newCard);
-  currNode->range->values = newCardValues;
-  currNode->range->card = newCard;
+  // CardinalityValue *newCardValues = array_new(CardinalityValue, currNode->range->splitCard);
+  // for (int i = 0; i < array_len(currNode->range->values); ++i) {
+  //   int appearances = currNode->range->values[i].appearances;
+  //   if (i < ninfo->reduceCardinalitySize) {
+  //     appearances -= ninfo->valuesDeleted[i];
+  //   }
+  //   if (appearances > 0) {
+  //     CardinalityValue val;
+  //     val.value = currNode->range->values[i].value;
+  //     val.appearances = appearances;
+  //     newCardValues = array_append(newCardValues, val);
+  //     ++newCard;
+  //   }
+  // }
+  // array_free(currNode->range->values);
+  // newCardValues = array_trimm_cap(newCardValues, newCard);
+  // currNode->range->values = newCardValues;
+  // currNode->range->card = newCard;
 }
 
 static FGCError FGC_parentHandleNumeric(ForkGC *gc, RedisModuleCtx *rctx) {
@@ -866,7 +866,7 @@ static FGCError FGC_parentHandleNumeric(ForkGC *gc, RedisModuleCtx *rctx) {
       FGC_unlock(gc, rctx);
       hasLock = 0;
     }
-    rm_free(ninfo.valuesDeleted);
+    // rm_free(ninfo.valuesDeleted);
   }
 
   rm_free(fieldName);

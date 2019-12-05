@@ -37,7 +37,7 @@ typedef struct {
 
   u_int16_t card;
   uint32_t splitCard;
-  CardinalityValue *values;
+  RedisModuleDict *values;
   InvertedIndex *entries;
 } NumericRange;
 
