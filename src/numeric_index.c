@@ -65,15 +65,15 @@ int NumericRange_Overlaps(NumericRange *n, double min, double max) {
 }
 
 int NumericRange_Add(NumericRange *n, t_docId docId, double value, int checkCard) {
-
   int add = 0;
-  char keyname[128];
-  snprintf(keyname, sizeof(keyname), "%.12g", value);
+
   CardinalityValue *val = NULL;
   if (checkCard) {
-    // size_t card = n->card;
+    void *p;
+    p = (void*) rm_calloc(1, sizeof(double*));
+    p = (double*)&value;
     /* Seek the iterator. */
-    val = RedisModule_DictGetC(n->values, (void *)keyname, strlen(keyname), NULL);
+    val = RedisModule_DictGetC(n->values,p,sizeof(double*), NULL);
     if (val) {
       val->appearances++;
     } else {
@@ -81,7 +81,7 @@ int NumericRange_Add(NumericRange *n, t_docId docId, double value, int checkCard
         val = RedisModule_Alloc(sizeof(CardinalityValue));
         val->value = value;
         val->appearances = 1;
-        RedisModule_DictSetC(n->values, (void *)keyname, strlen(keyname), val);
+        RedisModule_DictSetC(n->values, p,sizeof(double*), val);
         n->unique_sum += value;
       }
       ++n->card;
