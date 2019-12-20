@@ -654,7 +654,7 @@ static RSValue *getValueFromField(RedisModuleString *origval, int typeCode) {
 //    }
 //}
 
-void get_field_va_1_16(SearchResult *r, RedisModuleKey *k, int n_fields, ...) {
+void get_field_va_1_16(const SearchResult *r, const RedisModuleKey *k, int n_fields, ...) {
 
     RedisModuleString **v = rm_calloc(n_fields, sizeof(RedisModuleString *) );
     va_list ap;
@@ -711,6 +711,7 @@ static void loadExplicitFields(struct loaderCtx *lc, RedisSearchCtx *sctx, Redis
 
   for (size_t ii = 0; ii < nfields; ++ii) {
     const LoadedField *field = lc->fields + ii;
+      skiplist[ii]=false;
 
     // NOTE: Text fulltext fields are normalized
     if (field->type == FIELD_NUMERIC && field->sortIndex > -1 && dmd->sortVector) {
@@ -732,7 +733,7 @@ static void loadExplicitFields(struct loaderCtx *lc, RedisSearchCtx *sctx, Redis
               continue;  // not gonna open the key
           }
           // 4 fields
-          if ( ii+2<nfields ) {
+          if ( ii+3<nfields ) {
               if ( ( skiplist[ii+1]==false ) && ( skiplist[ii+2]==false ) && ( skiplist[ii+3]==false ) ) {
                   const LoadedField *field2 = lc->fields + ii + 1;
                   const LoadedField *field3 = lc->fields + ii + 2;
