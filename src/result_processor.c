@@ -594,65 +594,65 @@ static RSValue *getValueFromField(RedisModuleString *origval, int typeCode) {
       // Just store as a string
   }
 }
-//
-//void get_field_3(SearchResult *r, RedisModuleKey *k, const LoadedField *field1, const LoadedField *field2, const LoadedField *field3 ) {// Try to get the field
-//    RedisModuleString *v1 = NULL;
-//    RedisModuleString *v2 = NULL;
-//    RedisModuleString *v3 = NULL;
-//    int rv = RedisModule_HashGet(k, REDISMODULE_HASH_CFIELDS, field1->name, &v1, field2->name, &v2, field3->name, &v3, NULL);
-//    if (rv == REDISMODULE_OK ) {
-//        if ( v1 ) {
-//            RSFieldMap_Add(&r->fields, field1->name, getValueFromField(v1, field1->type));
-//        }else{
-//            RSFieldMap_Add(&r->fields, field1->name, RS_NullVal());
-//        }
-//        if ( v2 ) {
-//            RSFieldMap_Add(&r->fields, field2->name, getValueFromField(v2, field2->type));
-//        }else{
-//            RSFieldMap_Add(&r->fields, field2->name, RS_NullVal());
-//        }
-//        if ( v3 ) {
-//            RSFieldMap_Add(&r->fields, field3->name, getValueFromField(v3, field3->type));
-//        }else{
-//            RSFieldMap_Add(&r->fields, field3->name, RS_NullVal());
-//        }
-//    } else {
-//        RSFieldMap_Add(&r->fields, field1->name, RS_NullVal());
-//        RSFieldMap_Add(&r->fields, field2->name, RS_NullVal());
-//        RSFieldMap_Add(&r->fields, field3->name, RS_NullVal());
-//    }
-//}
-//
-//void get_field_2(SearchResult *r, RedisModuleKey *k, const LoadedField *field1, const LoadedField *field2 ) {// Try to get the field
-//    RedisModuleString *v1 = NULL;
-//    RedisModuleString *v2 = NULL;
-//    int rv = RedisModule_HashGet(k, REDISMODULE_HASH_CFIELDS, field1->name, &v1, field2->name, &v2, NULL);
-//    if (rv == REDISMODULE_OK ) {
-//        if ( v1 ) {
-//            RSFieldMap_Add(&r->fields, field1->name, getValueFromField(v1, field1->type));
-//        }else{
-//            RSFieldMap_Add(&r->fields, field1->name, RS_NullVal());
-//        }
-//        if ( v2 ) {
-//            RSFieldMap_Add(&r->fields, field2->name, getValueFromField(v2, field2->type));
-//        }else{
-//            RSFieldMap_Add(&r->fields, field2->name, RS_NullVal());
-//        }
-//    } else {
-//        RSFieldMap_Add(&r->fields, field1->name, RS_NullVal());
-//        RSFieldMap_Add(&r->fields, field2->name, RS_NullVal());
-//    }
-//}
-//
-//void get_field_1(SearchResult *r, RedisModuleKey *k,const LoadedField *field) {// Try to get the field
-//    RedisModuleString *v = NULL;
-//    int rv = RedisModule_HashGet(k, REDISMODULE_HASH_CFIELDS, field->name, &v, NULL);
-//    if (rv == REDISMODULE_OK && v) {
-//        RSFieldMap_Add(&r->fields, field->name, getValueFromField(v, field->type));
-//    } else {
-//        RSFieldMap_Add(&r->fields, field->name, RS_NullVal());
-//    }
-//}
+
+void get_field_3(SearchResult *r, RedisModuleKey *k, const LoadedField *field1, const LoadedField *field2, const LoadedField *field3 ) {// Try to get the field
+    RedisModuleString *v1 = NULL;
+    RedisModuleString *v2 = NULL;
+    RedisModuleString *v3 = NULL;
+    int rv = RedisModule_HashGet(k, REDISMODULE_HASH_CFIELDS, field1->name, &v1, field2->name, &v2, field3->name, &v3, NULL);
+    if (rv == REDISMODULE_OK ) {
+        if ( v1 ) {
+            RSFieldMap_Add(&r->fields, field1->name, getValueFromField(v1, field1->type));
+        }else{
+            RSFieldMap_Add(&r->fields, field1->name, RS_NullVal());
+        }
+        if ( v2 ) {
+            RSFieldMap_Add(&r->fields, field2->name, getValueFromField(v2, field2->type));
+        }else{
+            RSFieldMap_Add(&r->fields, field2->name, RS_NullVal());
+        }
+        if ( v3 ) {
+            RSFieldMap_Add(&r->fields, field3->name, getValueFromField(v3, field3->type));
+        }else{
+            RSFieldMap_Add(&r->fields, field3->name, RS_NullVal());
+        }
+    } else {
+        RSFieldMap_Add(&r->fields, field1->name, RS_NullVal());
+        RSFieldMap_Add(&r->fields, field2->name, RS_NullVal());
+        RSFieldMap_Add(&r->fields, field3->name, RS_NullVal());
+    }
+}
+
+void get_field_2(SearchResult *r, RedisModuleKey *k, const LoadedField *field1, const LoadedField *field2 ) {// Try to get the field
+    RedisModuleString *v1 = NULL;
+    RedisModuleString *v2 = NULL;
+    int rv = RedisModule_HashGet(k, REDISMODULE_HASH_CFIELDS, field1->name, &v1, field2->name, &v2, NULL);
+    if (rv == REDISMODULE_OK ) {
+        if ( v1 ) {
+            RSFieldMap_Add(&r->fields, field1->name, getValueFromField(v1, field1->type));
+        }else{
+            RSFieldMap_Add(&r->fields, field1->name, RS_NullVal());
+        }
+        if ( v2 ) {
+            RSFieldMap_Add(&r->fields, field2->name, getValueFromField(v2, field2->type));
+        }else{
+            RSFieldMap_Add(&r->fields, field2->name, RS_NullVal());
+        }
+    } else {
+        RSFieldMap_Add(&r->fields, field1->name, RS_NullVal());
+        RSFieldMap_Add(&r->fields, field2->name, RS_NullVal());
+    }
+}
+
+void get_field_1(SearchResult *r, RedisModuleKey *k,const LoadedField *field) {// Try to get the field
+    RedisModuleString *v = NULL;
+    int rv = RedisModule_HashGet(k, REDISMODULE_HASH_CFIELDS, field->name, &v, NULL);
+    if (rv == REDISMODULE_OK && v) {
+        RSFieldMap_Add(&r->fields, field->name, getValueFromField(v, field->type));
+    } else {
+        RSFieldMap_Add(&r->fields, field->name, RS_NullVal());
+    }
+}
 
 void get_field_va_1_16(const SearchResult *r, const RedisModuleKey *k, int n_fields, ...) {
 
@@ -732,25 +732,25 @@ static void loadExplicitFields(struct loaderCtx *lc, RedisSearchCtx *sctx, Redis
           if (skiplist[ii]==true) {
               continue;  // not gonna open the key
           }
-          // 4 fields
-          if ( ii+3<nfields ) {
-              if ( ( skiplist[ii+1]==false ) && ( skiplist[ii+2]==false ) && ( skiplist[ii+3]==false ) ) {
-                  const LoadedField *field2 = lc->fields + ii + 1;
-                  const LoadedField *field3 = lc->fields + ii + 2;
-                  const LoadedField *field4 = lc->fields + ii + 2;
-                  get_field_va_1_16( r, k, 4, field, field2, field3, field4 );
-                  ++ii;
-                  ++ii;
-                  ++ii;
-                  continue;
-              }
-          }
+//          // 4 fields
+//          if ( ii+3<nfields ) {
+//              if ( ( skiplist[ii+1]==false ) && ( skiplist[ii+2]==false ) && ( skiplist[ii+3]==false ) ) {
+//                  const LoadedField *field2 = lc->fields + ii + 1;
+//                  const LoadedField *field3 = lc->fields + ii + 2;
+//                  const LoadedField *field4 = lc->fields + ii + 2;
+//                  get_field_va_1_16( r, k, 4, field, field2, field3, field4 );
+//                  ++ii;
+//                  ++ii;
+//                  ++ii;
+//                  continue;
+//              }
+//          }
           // 3 fields
           if ( ii+2<nfields ) {
               if ( ( skiplist[ii+1]==false ) && ( skiplist[ii+2]==false ) ) {
                   const LoadedField *field2 = lc->fields + ii + 1;
                   const LoadedField *field3 = lc->fields + ii + 2;
-                  get_field_va_1_16( r, k, 3, field, field2, field3 );
+                  get_field_3( r, k, field, field2, field3 );
                   ++ii;
                   ++ii;
                   continue;
@@ -760,12 +760,12 @@ static void loadExplicitFields(struct loaderCtx *lc, RedisSearchCtx *sctx, Redis
           if ( ii+1<nfields ){
               if ( skiplist[ii+1]==false ){
                   const LoadedField *field2 = lc->fields + ii + 1;
-                  get_field_va_1_16( r, k, 2, field, field2 );
+                  get_field_2( r, k, field, field2 );
                   ++ii;
                   continue;
               }
           }
-          get_field_va_1_16( r, k, 1, field);
+          get_field_1( r, k, field);
 
       }
   }
