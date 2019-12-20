@@ -564,7 +564,7 @@ ResultProcessor *NewPager(ResultProcessor *upstream, uint32_t offset, uint32_t l
  *
  *******************************************************************************************************************/
 typedef struct {
-  const char *name;  // Key to use on output
+  RedisModuleString *name;  // Key to use on output
   int sortIndex;     // If sortable, sort index; otherwise -1
   int type;          // Type, if in field spec, otherwise -1
 } LoadedField;
@@ -612,7 +612,7 @@ static void loadExplicitFields(struct loaderCtx *lc, RedisSearchCtx *sctx, Redis
       RSSortingKey k = {.index = field->sortIndex};
       RSValue *v = RSSortingVector_Get(dmd->sortVector, &k);
       if (v) {
-        RSFieldMap_Add(&r->fields, field->name, v);
+        RSFieldMap_Add(&r->fields, RedisModule_StringPtrLen(field->name,NULL), v);
         continue;
       }
     }
@@ -623,11 +623,11 @@ static void loadExplicitFields(struct loaderCtx *lc, RedisSearchCtx *sctx, Redis
 
     // Try to get the field
     RedisModuleString *v = NULL;
-    int rv = RedisModule_HashGet(k, REDISMODULE_HASH_CFIELDS, field->name, &v, NULL);
+    int rv = RedisModule_HashGet(k, 0, field->name, &v, NULL);
     if (rv == REDISMODULE_OK && v) {
-      RSFieldMap_Add(&r->fields, field->name, getValueFromField(v, field->type));
+      RSFieldMap_Add(&r->fields, RedisModule_StringPtrLen(field->name,NULL), getValueFromField(v, field->type));
     } else {
-      RSFieldMap_Add(&r->fields, field->name, RS_NullVal());
+      RSFieldMap_Add(&r->fields, RedisModule_StringPtrLen(field->name,NULL), RS_NullVal());
     }
   }
 
@@ -693,7 +693,7 @@ ResultProcessor *NewLoader(ResultProcessor *upstream, RedisSearchCtx *sctx, Fiel
   for (size_t ii = 0; ii < fields->numFields; ++ii) {
     const char *name = fields->fields[ii].name;
     LoadedField *lf = sc->fields + ii;
-    lf->name = name;
+    lf->name = RedisModule_CreateString(NULL, name, strlen(name));
     // Find the fieldspec
     const FieldSpec *fs = IndexSpec_GetField(sctx->spec, name, strlen(name));
     if (fs) {
