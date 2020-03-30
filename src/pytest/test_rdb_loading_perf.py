@@ -9,11 +9,11 @@ REDISEARCH_CACHE_DIR = '/tmp/'
 BASE_RDBS_URL = 'https://performance-cto-group-public.s3.amazonaws.com/benchmarks/redisearch/ftsb/rdbs/'
 
 RDBS = {
-    "synthetic-numeric-int-idx1": 'redisearch-load-synthetic-numeric-int_1M_docs.rdb',
-    "synthetic-tag-idx1": 'redisearch-load-synthetic-tag_1M_docs.rdb',
-    "synthetic-text-idx1": 'redisearch-load-synthetic-text_1M_docs.rdb',
-    "enwiki-abstract-idx1": 'enwiki-abstract-601164_docs.rdb',
-    "enwiki-pages-meta-idx1": 'enwiki-pages-meta-376939_docs.rdb'
+    "synthetic-numeric-int-idx1": 'nosave_redisearch-load-synthetic-numeric-int_1M_docs.rdb',
+    "synthetic-tag-idx1": 'nosave_redisearch-load-synthetic-tag_1M_docs.rdb',
+    "synthetic-text-idx1": 'nosave_redisearch-load-synthetic-text_1M_docs.rdb',
+    "enwiki-abstract-idx1": 'nosave_enwiki-abstract-601164_docs.rdb',
+    "enwiki-pages-meta-idx1": 'nosave_enwiki-pages-meta-376939_docs.rdb'
 }
 
 
